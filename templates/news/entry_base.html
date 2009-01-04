@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load i18n pagination_tags compressed templatetools %}
+
+{% block css %}
+{% compressed_css 'news' %} 
+{% endblock %}
+
+{% block js %}
+{% compressed_js 'news' %} 
+{% endblock %}
+
+{% block alt_content %}
+<h1>{% trans 'Fréttir' %}</h1>
+{% get_list_of_objects news Entry live_entries as list_of_entries %}
+{% if list_of_entries %}
+{% autopaginate list_of_entries %}
+{% paginate %}
+<ul>
+{% for entry in list_of_entries %}
+    <li>
+        {% ifequal request.path entry.get_absolute_url %}
+        <span class="selected">{{ entry.default_title }}</span>
+        {% else %}
+        <a href="{{ entry.get_absolute_url }}">{{ entry.default_title|truncatewords:"10" }}</a>
+        {% endifequal %}
+    </li>
+{% endfor %}
+</ul>
+{% paginate %}
+{% else %}
+<p class="info">{% trans 'Engar fréttir hafa verið skrifaðar' %}</p>
+{% endif %}
+{% endblock %}

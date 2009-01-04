@@ -1,0 +1,22 @@
+{% load i18n templatetools comments %}
+<div class="news-entry {% if important %}important{% endif %}">
+    {% if entry.has_multiple_content %}
+    <ul class="languages">
+            {% for content in entry.get_contents %}
+            <li class="{{ forloop|get_position_class }} flag"><a href="{{ content.get_absolute_url }}" class="{{ content.language }}">{{ content.language }}</a></li>
+            {% endfor %}
+    </ul>
+    {% endif %}
+    {% with entry.excerpt as body_html %}{% with entry.publish_date as publish_date %}
+    <h1><a href="{{ entry.get_absolute_url }}">{{entry.default_title }}</a></h1>
+    {% include 'news/entry_content.html' %}
+    {% endwith %}{% endwith %}
+    {% with entry.get_absolute_url as absolute_url %}
+    <div class="meta">
+        <a class="news-author" title="{% trans 'Höfundur þessarar fréttar' %}" href="{{ entry.author.get_absolute_url }}">{{ entry.author.get_profile.get_fullname }}</a>
+        {% if entry.enable_comments %}
+        {% get_comment_count for entry as nr_of_comments %}<a class="entry-comment-count" href="{{ absolute_url }}">{{ nr_of_comments|readable_nr_of_comments }}</a>
+        {% endif %}
+    </div>
+    {% endwith %}
+</div>

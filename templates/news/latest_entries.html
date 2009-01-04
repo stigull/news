@@ -1,0 +1,10 @@
+{% load i18n  %}
+{% if list_of_entries %}
+{% for entry in list_of_entries %}
+{% include 'news/entry.html' %}
+{% endfor %}
+{% else %}
+{% if is_first_batch %}
+<p class="info">{% trans 'Engar fréttir hafa verið skrifaðar' %}</p>
+{% endif %}
+{% endif %}

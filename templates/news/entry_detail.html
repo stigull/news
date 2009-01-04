@@ -1,0 +1,56 @@
+{% extends 'news/entry_base.html' %}
+
+{% load i18n templatetools comments %}
+
+{% block content %}
+<div class="news-entry">
+    {% with entry.get_contents as contents %}
+    {% if entry.has_multiple_content %}
+    <ul class="languages">
+            {% for content in contents %}
+            <li class="{{ forloop|get_position_class }} flag"><a href="{{ content.get_absolute_url }}" class="{{ content.language }}">{{ content.language }}</a></li>
+            {% endfor %}
+    </ul>
+
+    {% for content in contents %}
+    <div class="news-entry-content" id="{{ content.get_id }}">
+        {% with content.body_html as body_html %}{% with entry.publish_date as publish_date %}
+        <h1>{{ content.title }}</h1>
+        {% include 'news/entry_content.html' %}
+        {% endwith %}{% endwith %}
+    </div>
+    {% endfor %}
+    {% else %}
+        {% with entry.default_body_html as body_html %}{% with entry.publish_date as publish_date %}
+        <h1>{{ entry.default_title }}</h1>
+        {% include 'news/entry_content.html' %}
+        {% endwith %}{% endwith %}
+    {% endif %}
+    {% endwith %}
+    
+    <h3>Höfundur:</h3>
+    <a class="news-author" title="{% trans 'Höfundur þessarar fréttar' %}" href="{{ entry.author.get_absolute_url }}">{{ entry.author.get_profile.get_fullname }}</a>
+    
+    {% if entry.has_changes %}
+    <h3>Breytt af:</h3>
+        {% regroup entry.changes.all by changed_by as changes_by_users %}
+        {% for user in changes_by_users %}
+        <a class="news-author" title="{% trans 'Sá sem breytti fréttinni' %}" href="{{ user.grouper.get_absolute_url }}">{{ user.grouper.get_profile.get_fullname }}</a>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% if entry.enable_comments %}
+<div id="comments">
+{% with entry as object %}
+{% include 'comments/list_of_comments.html' %}
+{% endwith %}
+</div>
+
+<h2>{% trans 'Leggðu orð í belg!' %}</h2>
+{% render_comment_form for entry %}
+
+{% endif %}
+
+
+{% endblock %} 

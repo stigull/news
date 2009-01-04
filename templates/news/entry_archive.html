@@ -1,0 +1,11 @@
+{% extends 'news/entry_base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+<h1 class="first">{% trans 'Nýjustu fréttir' %}</h1>
+{% with latest as list_of_entries %}
+{% include 'news/latest_entries.html' %}
+{% endwith %}
+
+{% endblock %}
