@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from news.models import Entry, EntryChange, Content, DEFAULT_LANGUAGE
-from utils import slugify
+from utils.stringformatting import slugify
 
 LANGUAGES = dict(settings.LANGUAGES)
 
@@ -20,17 +20,17 @@ class ContentFormset(BaseInlineFormSet):
                     raise forms.ValidationError(_(u"Hver frétt má í mesta lagi hafa eitt meginmál á hverju tungumáli"))
                 else:
                     languages.append(language)
-                    
+
         if DEFAULT_LANGUAGE not in languages:
             raise forms.ValidationError(_(u"Frétt verður að hafa eitt meginmál á tungumálinu: %s" % LANGUAGES[DEFAULT_LANGUAGE] ))
-       
+
 class ContentInline(admin.StackedInline):
     model = Content
     formset = ContentFormset
     extra = 2
     max_num = 3
 
-    
+
 def show_author(entry):
     author = entry.author
     try:
@@ -47,7 +47,7 @@ show_title.short_description = _(u"Titill")
 
 class EntryAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish_date'
-    
+
     fieldsets = (
         (_(u"Almennt"), {
             'fields': ('publish_date', 'status','enable_comments')
@@ -56,13 +56,13 @@ class EntryAdmin(admin.ModelAdmin):
             'fields': ('is_important', 'important_until',)
         }),
     )
-    
+
     inlines = [ContentInline]
-    
+
     list_display = (show_title,  'publish_date', show_author,  'enable_comments', 'is_important', 'status')
     search_fields = ('content__title', 'content__body', 'publish_date')
-    
-    def save_model(self, request, obj, form, change):        
+
+    def save_model(self, request, obj, form, change):
         if change:
             if obj.author != request.user:
                 change = EntryChange(changed_by = request.user)
@@ -71,6 +71,6 @@ class EntryAdmin(admin.ModelAdmin):
         else:
             obj.author = request.user
         obj.save()
-    
+
 admin.site.register(Content)
-admin.site.register(Entry, EntryAdmin) 
+admin.site.register(Entry, EntryAdmin)
