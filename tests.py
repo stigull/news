@@ -1,7 +1,7 @@
 #coding: utf-8
 import unittest
 
-from utils import slugify
+from utils.stringformatting import slugify
 
 class TestCreateNews(unittest.TestCase): 
     
