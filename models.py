@@ -4,7 +4,7 @@
 import datetime
 import operator
 
-from markdown import markdown
+from markdown2 import markdown
 
 from django.db import models
 from django.contrib.auth.models import User
