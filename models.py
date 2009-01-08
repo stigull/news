@@ -117,10 +117,31 @@ class Entry(models.Model):
         return self.content.all().count() > 1
 
     def get_contents(self):
-        return self.content.filter(language = DEFAULT_LANGUAGE) | self.content.exclude(language = DEFAULT_LANGUAGE)
+        entries = []
+        primary_entry = self.content.filter(language = DEFAULT_LANGUAGE)
+        other_entries = self.content.exclude(language = DEFAULT_LANGUAGE)
+        for entry in primary_entry:
+            entries.append(entry)
+
+        for entry in other_entries:
+            entries.append(entry)
+        return entries
 
     def has_changes(self):
         return self.changes.all().count() > 0
+
+    def get_email_subject(self):
+        return self.default_title
+
+    def get_email_template(self):
+        return "news/entry_as_email.txt"
+
+    def get_email_context(self):
+        return {'entry': self }
+
+    def get_email_recipients(self):
+        return [user.email for user in User.objects.filter(is_active = True) ]
+
 
 
 class Content(models.Model):

@@ -5,6 +5,7 @@ from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
+from emailer.forms import EmailObjectForm
 from news.models import Entry, EntryChange, Content, DEFAULT_LANGUAGE
 from utils.stringformatting import slugify
 
@@ -45,6 +46,12 @@ def show_title(entry):
     return entry.default_title
 show_title.short_description = _(u"Titill")
 
+def send_email_link(entry):
+    form = EmailObjectForm(initial = {'appname': 'news', 'modelname': 'Entry', 'instance_id': entry.id })
+    return form.render()
+send_email_link.short_description = _(u"Senda tölvupóst á virka notendur")
+send_email_link.allow_tags = True
+
 class EntryAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish_date'
 
@@ -59,7 +66,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     inlines = [ContentInline]
 
-    list_display = (show_title,  'publish_date', show_author,  'enable_comments', 'is_important', 'status')
+    list_display = (show_title,  'publish_date', show_author,  'enable_comments', 'is_important', 'status', send_email_link)
     search_fields = ('content__title', 'content__body', 'publish_date')
 
     def save_model(self, request, obj, form, change):
