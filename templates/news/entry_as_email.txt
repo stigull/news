@@ -1,0 +1,5 @@
+{% for content in entry.get_contents %}
+{{ content.body }}
+
+--------------------------------------
+{% endfor %}
