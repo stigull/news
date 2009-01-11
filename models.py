@@ -148,7 +148,7 @@ class Content(models.Model):
     entry = models.ForeignKey("news.Entry", related_name = 'content')
     language  = models.CharField(_(u"Tungumál"), choices = LANGUAGES, max_length = 2)
     title = models.CharField(_(u"Titill"), max_length=250)
-    body = models.TextField(_(u"Meginmál"))
+    body = models.TextField(_(u"Meginmál"), help_text = _(u"Hér má nota Markdown merkjamálið"))
     body_html = models.TextField(editable = False, blank=True)
 
     class Meta:
@@ -173,8 +173,7 @@ class Content(models.Model):
 def add_slug(sender, instance, created, **kwargs):
     if instance.language == DEFAULT_LANGUAGE:
         instance.entry.slug = slugify(instance.title)
-        if instance.entry.excerpt == "":
-            instance.entry.excerpt = truncatewords_html(instance.body_html, 30)
+        instance.entry.excerpt = truncatewords_html(instance.body_html, 30)
         instance.entry.save()
 
 models.signals.post_save.connect(add_slug, sender=Content)

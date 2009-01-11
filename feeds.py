@@ -14,7 +14,7 @@ except:
     sitename = ""
 
 class LatestEntries(Feed):
-    title = _(u"%(sitename)s: Nýjustu fréttir" % {'sitename' : sitename })
+    title = u"%(sitename)s: Nýjustu fréttir" % {'sitename' : sitename }
     title_template = "news/feeds/latest_title.html"
     link = "/frettir/"
     description = _(u"Nýjustu fréttirnar frá %(sitename)s" % {'sitename': sitename })

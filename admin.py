@@ -7,6 +7,7 @@ from django.conf import settings
 
 from emailer.forms import EmailObjectForm
 from news.models import Entry, EntryChange, Content, DEFAULT_LANGUAGE
+from news.forms import EntryForm
 from utils.stringformatting import slugify
 
 LANGUAGES = dict(settings.LANGUAGES)
@@ -15,12 +16,13 @@ class ContentFormset(BaseInlineFormSet):
     def clean(self):
         languages = []
         for form in self.forms:
-            if 'language' in form.cleaned_data:
-                language = form.cleaned_data['language']
-                if language in languages:
-                    raise forms.ValidationError(_(u"Hver frétt má í mesta lagi hafa eitt meginmál á hverju tungumáli"))
-                else:
-                    languages.append(language)
+            if hasattr(form, "cleaned_data"):
+                if 'language' in form.cleaned_data:
+                    language = form.cleaned_data['language']
+                    if language in languages:
+                        raise forms.ValidationError(_(u"Hver frétt má í mesta lagi hafa eitt meginmál á hverju tungumáli"))
+                    else:
+                        languages.append(language)
 
         if DEFAULT_LANGUAGE not in languages:
             raise forms.ValidationError(_(u"Frétt verður að hafa eitt meginmál á tungumálinu: %s" % LANGUAGES[DEFAULT_LANGUAGE] ))
@@ -65,9 +67,11 @@ class EntryAdmin(admin.ModelAdmin):
     )
 
     inlines = [ContentInline]
+    form = EntryForm
 
     list_display = (show_title,  'publish_date', show_author,  'enable_comments', 'is_important', 'status', send_email_link)
     search_fields = ('content__title', 'content__body', 'publish_date')
+
 
     def save_model(self, request, obj, form, change):
         if change:
