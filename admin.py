@@ -50,7 +50,7 @@ show_title.short_description = _(u"Titill")
 
 def send_email_link(entry):
     form = EmailObjectForm(initial = {'appname': 'news', 'modelname': 'Entry', 'instance_id': entry.id })
-    return form.render()
+    return form.render(u"Senda þessa frétt í tölvupóst", "Senda sem tölvupóst")
 send_email_link.short_description = _(u"Senda tölvupóst á virka notendur")
 send_email_link.allow_tags = True
 
