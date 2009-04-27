@@ -69,13 +69,10 @@ class EntryAdmin(admin.ModelAdmin):
 
     def send_entry(self, request, queryset):
         if queryset.all().count() == 1:
-            action = SendAction(request, queryset)
+            action = SendAction(request, queryset[0])
             return action.process()
         else:
             self.message_user(request, u"Aðeins er hægt að senda eina frétt í einu!")
-
-
-
     send_entry.short_description = _(u"Senda tölvupóst á virka notendur")
 
 
