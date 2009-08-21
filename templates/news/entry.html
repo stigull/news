@@ -3,7 +3,7 @@
     {% if entry.has_multiple_content %}
     <ul class="languages">
             {% for content in entry.get_contents %}
-            <li class="{{ forloop|get_position_class }} flag"><a href="{{ content.get_absolute_url }}" class="{{ content.language }}">{{ content.language }}</a></li>
+            <li class="{{ forloop|get_position_class }} flag"><a href="{{ content.get_absolute_url }}" class="{{ content.language }}" title="{{ content.language }}">{{ content.language }}</a></li>
             {% endfor %}
     </ul>
     {% endif %}
